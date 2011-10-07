@@ -1,4 +1,5 @@
 function Universe() {
+  
   // do we have an existing instance?
   if (typeof Universe.instance === "object") {
     return Universe.instance;
