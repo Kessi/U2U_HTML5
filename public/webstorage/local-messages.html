@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Storing messages</title>
+  <script src="/js/modernizr-2.0.6-development-only.js"></script>
+  <script>
+    window.onload = function (wnd)
+    {
+      window.addEventListener("storage", storageChanged, false);
+
+      var theMessage = document.getElementById("theMessage");
+      if (theMessage)
+      {
+        if (Modernizr.localstorage)
+        {
+          if (localStorage.getItem("message") != null)
+          {
+            theMessage.value = localStorage["message"];
+          }
+          else
+          {
+            theMessage.value = "Type here";
+          }
+        }
+        else
+        {
+          theMessage.value = "Sorry, not storage supported";
+        }
+
+        theMessage.onchange = function (changes)
+        {
+          localStorage.setItem("message", theMessage.value);
+        }
+      }
+    }
+
+    function storageChanged(/*StorageEvent*/e)
+    {
+      if (e.key == "message")
+      {
+        var trackedMessage = document.getElementById("trackedMessage");
+        trackedMessage.innerHTML = e.newValue;
+      }
+    }
+
+    function listStorage()
+    {
+      var keysList = document.getElementById("keysList");
+      for (var i = 0; i < localStorage.length; i++)
+      {
+        var key = localStorage.key(i);
+        if (key != null)
+        {
+          var option = document.createElement("option");
+          option.text = key;
+          option.value = key;
+          keysList.options.add(option);
+        }
+      }
+    }
+
+    function showSelectedKey()
+    {
+      var keysList = document.getElementById("keysList");
+      var key = keysList.options[keysList.selectedIndex];
+      var currentSelected = document.getElementById("currentSelected");
+      currentSelected.innerHTML = localStorage[key.value];
+    }
+
+
+  </script>
+  <style type="text/css">
+    .message-input {
+      border: thin solid #0000FF;
+    }
+    .message-feedback {
+      border: thin solid #00FF00;
+    }
+  </style>
+</head>
+<body>
+  <h1>
+    Storing messages</h1>
+  <div style="border: border-width=8">
+    <input id="theMessage" type="text" />
+  </div>
+  <div id="trackedMessage" style="border: border-color=blue">
+  </div>
+  <input type="button" onclick="listStorage()" value="List" />
+  <select id="keysList" onchange="showSelectedKey()">
+  </select>
+  <div id="currentSelected">
+  </div>
+</body>
+</html>
